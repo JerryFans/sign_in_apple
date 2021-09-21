@@ -24,19 +24,17 @@ class SignInApple {
   static const MethodChannel _channel = const MethodChannel('sign_in_apple');
 
   static handleAppleSignInCallBack(
-      {DidCompleteWithSignIn onCompleteWithSignIn,
-      DidCompleteWithError onCompleteWithError}) {
+      {required DidCompleteWithSignIn onCompleteWithSignIn,
+      required DidCompleteWithError onCompleteWithError}) {
     Future<dynamic> platformCallHandler(MethodCall call) async {
       switch (call.method) {
         case "didCompleteWithSignIn":
-          if (onCompleteWithSignIn != null) {
-            var user = AppleIdUser.fromJson(call.arguments);
-            await onCompleteWithSignIn(user);
-          }
+          var user = AppleIdUser.fromJson(call.arguments);
+          await onCompleteWithSignIn(user);
           break;
         case "didCompleteWithError":
-          if (onCompleteWithError != null) {
-            AppleSignInErrorCode errorCode;
+        {
+          AppleSignInErrorCode errorCode = AppleSignInErrorCode.unknown;
             int code = call.arguments["code"] ?? 1000;
             switch (code) {
               case 1000:
@@ -56,7 +54,7 @@ class SignInApple {
                 break;
             }
             await onCompleteWithError(errorCode);
-          }
+        }
           break;
       }
     }
@@ -87,12 +85,12 @@ class AppleSignInSystemButton extends StatelessWidget {
   final AppleSignInSystemButtonStyle buttonStyle;
 
   AppleSignInSystemButton(
-      {Key key,
-      this.width,
-      this.height,
-      this.cornerRadius,
+      {Key? key,
+      required this.width,
+      required this.height,
+      this.cornerRadius = 0,
       this.buttonStyle = AppleSignInSystemButtonStyle.black})
-      : assert((width != null && height != null && width > 0 && height > 0),
+      : assert((width > 0 && height > 0),
             "AppleSignInSystemButton param width and height must > 0"),
         super(key: key);
 

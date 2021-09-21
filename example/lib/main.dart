@@ -30,8 +30,8 @@ class _MyAppState extends State<MyApp> {
       print("flutter receiveToken \n");
       print(user.identifyToken);
       setState(() {
-        _name = user.name;
-        _mail = user.mail;
+        _name = user.name ?? ""; // may be null or "" if use set privacy
+        _mail = user.mail ?? ""; // may be null or "" if use set privacy
         _userIdentify = user.userIdentifier;
         _authorizationCode = user.authorizationCode;
       });

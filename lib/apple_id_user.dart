@@ -1,29 +1,29 @@
 class AppleIdUser {
-  String name;
-  String familyName;
-  String givenName;
-  String mail;
-  String userIdentifier;
-  String authorizationCode;
-  String identifyToken;
+  String? name;
+  String? familyName;
+  String? givenName;
+  String? mail;
+  String userIdentifier = "";
+  String authorizationCode = "";
+  String identifyToken = "";
 
   AppleIdUser(
       {this.name,
       this.familyName,
       this.givenName,
       this.mail,
-      this.userIdentifier,
-      this.authorizationCode,
-      this.identifyToken});
+      this.userIdentifier = "",
+      this.authorizationCode = "",
+      this.identifyToken = ""});
 
   AppleIdUser.fromJson(dynamic json) {
     name = json['name'];
     familyName = json['familyName'];
     givenName = json['givenName'];
     mail = json['mail'];
-    userIdentifier = json['userIdentifier'];
-    authorizationCode = json['authorizationCode'];
-    identifyToken = json['identifyToken'];
+    userIdentifier = json['userIdentifier'] ?? "";
+    authorizationCode = json['authorizationCode'] ?? "";
+    identifyToken = json['identifyToken'] ?? "";
   }
 
   Map<String, dynamic> toJson() {
