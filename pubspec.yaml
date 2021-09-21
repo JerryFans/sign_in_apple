@@ -1,10 +1,10 @@
 name: sign_in_apple
 description: A flutter sign in apple  plugin project.
 version: 0.0.2
-author:
 homepage: https://github.com/JerryFans/sign_in_apple
 environment:
   sdk: ">=2.1.0 <3.0.0"
+  flutter: ">=1.10.0"
 
 dependencies:
   flutter:
