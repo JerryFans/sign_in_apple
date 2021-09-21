@@ -8,12 +8,13 @@ public class SwiftSignInApplePlugin: NSObject, FlutterPlugin, SignInAppleService
         switch authorization.credential {
         case let appleIDCredential as ASAuthorizationAppleIDCredential:
             let userIdentifier = appleIDCredential.user
-            let fullName = appleIDCredential.fullName?.nickname
+            var fullName = appleIDCredential.fullName?.familyName ?? ""
+            fullName.append(appleIDCredential.fullName?.givenName ?? "")
             let email = appleIDCredential.email
             let authCode: Data? = appleIDCredential.authorizationCode
             let authCodeString = String.init(data: authCode!, encoding: .utf8)
             let identifyTokenString = String.init(data: appleIDCredential.identityToken!, encoding: .utf8)
-            didCompleteWithSignIn(name: fullName ?? "", mail: email ?? "", userIdentifier: userIdentifier, authorizationCode: authCodeString ?? "", identifyToken: identifyTokenString ?? "")
+            didCompleteWithSignIn(name: fullName, mail: email ?? "", userIdentifier: userIdentifier, authorizationCode: authCodeString ?? "", identifyToken: identifyTokenString ?? "", familyName: appleIDCredential.fullName?.familyName ?? "", givenName: appleIDCredential.fullName?.givenName ?? "")
             break
             
         case _ as ASPasswordCredential:
@@ -62,8 +63,8 @@ public class SwiftSignInApplePlugin: NSObject, FlutterPlugin, SignInAppleService
         return false;
     }
     
-    public func didCompleteWithSignIn(name: String ,mail: String, userIdentifier: String, authorizationCode: String, identifyToken: String) {
-        channel.invokeMethod("didCompleteWithSignIn",arguments:["name":name,"mail":mail,"userIdentifier":userIdentifier,"authorizationCode":authorizationCode,"identifyToken":identifyToken])
+    public func didCompleteWithSignIn(name: String ,mail: String, userIdentifier: String, authorizationCode: String, identifyToken: String, familyName: String, givenName: String) {
+        channel.invokeMethod("didCompleteWithSignIn",arguments:["name":name,"mail":mail,"userIdentifier":userIdentifier,"authorizationCode":authorizationCode,"identifyToken":identifyToken,"familyName": familyName, "givenName" : givenName])
     }
     
     public func didCompleteWithError(code: Int) {

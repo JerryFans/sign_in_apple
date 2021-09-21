@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:flutter/services.dart';
 import 'package:sign_in_apple/sign_in_apple.dart';
+import 'package:sign_in_apple/apple_id_user.dart';
 
 void main() => runApp(MyApp());
 
@@ -24,20 +24,16 @@ class _MyAppState extends State<MyApp> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
-    SignInApple.handleAppleSignInCallBack(onCompleteWithSignIn: (String name,
-        String mail,
-        String userIdentifier,
-        String authorizationCode,
-        String identifyToken) async {
+    SignInApple.handleAppleSignInCallBack(onCompleteWithSignIn: (AppleIdUser user) async {
       print("flutter receiveCode: \n");
-      print(authorizationCode);
+      print(user.authorizationCode);
       print("flutter receiveToken \n");
-      print(identifyToken);
+      print(user.identifyToken);
       setState(() {
-        _name = name;
-        _mail = mail;
-        _userIdentify = userIdentifier;
-        _authorizationCode = authorizationCode;
+        _name = user.name;
+        _mail = user.mail;
+        _userIdentify = user.userIdentifier;
+        _authorizationCode = user.authorizationCode;
       });
     }, onCompleteWithError: (AppleSignInErrorCode code) async {
       var errorMsg = "unknown";

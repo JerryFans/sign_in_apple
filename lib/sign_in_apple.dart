@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'apple_id_user.dart';
 
 enum AppleSignInErrorCode {
   unknown,
@@ -11,19 +12,16 @@ enum AppleSignInErrorCode {
   failed,
 }
 
-
 enum AppleSignInSystemButtonStyle {
   white,
   black,
 }
 
-typedef DidCompleteWithSignIn = Future Function(String name, String mail,
-    String userIdentifier, String authorizationCode, String identifyToken);
+typedef DidCompleteWithSignIn = Future Function(AppleIdUser user);
 typedef DidCompleteWithError = Future Function(AppleSignInErrorCode code);
 
 class SignInApple {
-  static const MethodChannel _channel =
-      const MethodChannel('sign_in_apple');
+  static const MethodChannel _channel = const MethodChannel('sign_in_apple');
 
   static handleAppleSignInCallBack(
       {DidCompleteWithSignIn onCompleteWithSignIn,
@@ -32,12 +30,8 @@ class SignInApple {
       switch (call.method) {
         case "didCompleteWithSignIn":
           if (onCompleteWithSignIn != null) {
-            await onCompleteWithSignIn(
-                call.arguments["name"],
-                call.arguments["mail"],
-                call.arguments["userIdentifier"],
-                call.arguments["authorizationCode"],
-                call.arguments["identifyToken"],);
+            var user = AppleIdUser.fromJson(call.arguments);
+            await onCompleteWithSignIn(user);
           }
           break;
         case "didCompleteWithError":
@@ -66,9 +60,11 @@ class SignInApple {
           break;
       }
     }
+
     _channel.setMethodCallHandler(platformCallHandler);
   }
 
+  // click sign in button action
   static clickAppleSignIn() async {
     if (Platform.isIOS && await canUseAppleSigin() == true) {
       await _channel.invokeMethod('clickAppleSignIn');
@@ -76,13 +72,13 @@ class SignInApple {
       print("only support in iOS Device");
     }
   }
-
+  
+  // check current device canUseAppleSigin, 
+  // if not , you use hidden the apple sign in button
   static Future<bool> canUseAppleSigin() async {
     return await _channel.invokeMethod('canUseAppleSigin');
   }
-
 }
-
 
 class AppleSignInSystemButton extends StatelessWidget {
   final double width;
